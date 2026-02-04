@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Codeকথা AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0f172a',
+                        darkGray: '#1e293b',
+                        lightGray: '#334155',
+                        electricBlue: '#3b82f6',
+                        softPurple: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-dark text-white min-h-screen">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center">
+        <div class="bg-darkGray rounded-2xl p-8 w-full max-w-md border border-white/10 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 rounded-xl gradient-bg flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">👑</span>
+                </div>
+                <h1 class="text-2xl font-bold text-white">Admin <span
+                        class="px-2 py-0.5 rounded bg-orange-500 text-xs">PANEL</span></h1>
+                <p class="text-gray-400 mt-2">Sign in to access the admin dashboard</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Admin Email</label>
+                    <input type="email" id="adminEmail" required
+                        class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none"
+                        placeholder="admin@codekotha.ai">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Password</label>
+                    <input type="password" id="adminPassword" required
+                        class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none"
+                        placeholder="••••••••">
+                </div>
+                <div id="loginError" class="text-red-400 text-sm hidden"></div>
+                <button type="submit"
+                    class="w-full py-3 rounded-xl gradient-bg text-white font-semibold hover:opacity-90 transition-all">
+                    Sign In
+                </button>
+            </form>
+
+            <p class="text-center text-gray-500 text-sm mt-6">
+                <a href="/" class="text-electricBlue hover:underline">← Back to Website</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (Hidden by default) -->
+    <div id="adminDashboard" class="hidden">
+        <!-- Header -->
+        <header class="bg-darkGray border-b border-white/10 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Logo -->
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">👑</span>
+                        </div>
+                        <span class="text-xl font-bold text-white">Admin <span
+                                class="px-2 py-0.5 rounded bg-orange-500 text-xs">PANEL</span></span>
+                    </div>
+
+                    <!-- Navigation -->
+                    <nav class="hidden md:flex items-center space-x-1">
+                        <button onclick="showTab('dashboard')" id="tabDashboard"
+                            class="px-4 py-2 rounded-lg bg-electricBlue text-white text-sm font-medium">
+                            📊 Dashboard
+                        </button>
+                        <button onclick="showTab('plans')" id="tabPlans"
+                            class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-sm font-medium transition-all">
+                            💰 Plans
+                        </button>
+                        <button onclick="showTab('users')" id="tabUsers"
+                            class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-sm font-medium transition-all">
+                            👥 Users
+                        </button>
+                        <button onclick="showTab('projects')" id="tabProjects"
+                            class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-sm font-medium transition-all">
+                            📁 Projects
+                        </button>
+                        <button onclick="showTab('activity')" id="tabActivity"
+                            class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-sm font-medium transition-all">
+                            📜 Activity
+                        </button>
+                        <button onclick="showTab('transactions')" id="tabTransactions"
+                            class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-sm font-medium transition-all">
+                            💳 Transactions
+                        </button>
+                        <button onclick="showTab('settings')" id="tabSettings"
+                            class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-sm font-medium transition-all">
+                            ⚙️ Settings
+                        </button>
+                    </nav>
+
+                    <!-- User Dropdown -->
+                    <div class="relative">
+                        <button onclick="toggleDropdown()"
+                            class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all">
+                            <span class="text-gray-300 text-sm" id="adminName">admin</span>
+                            <span class="text-gray-400">▼</span>
+                        </button>
+                        <div id="dropdownMenu"
+                            class="hidden absolute right-0 mt-2 w-48 bg-darkGray rounded-xl border border-white/10 shadow-xl z-50">
+                            <a href="#" class="block px-4 py-3 text-gray-300 hover:bg-white/5 text-sm">⚙️ Settings</a>
+                            <button onclick="logout()"
+                                class="w-full text-left px-4 py-3 text-red-400 hover:bg-white/5 text-sm">🚪
+                                Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Dashboard Tab -->
+            <div id="contentDashboard">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-darkGray rounded-xl p-6 border border-white/10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-400 text-sm">Total Revenue</p>
+                                <p class="text-3xl font-bold text-white mt-1">₹<span id="statRevenue">0</span></p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                                <span class="text-2xl">💰</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-darkGray rounded-xl p-6 border border-white/10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-400 text-sm">Total Users</p>
+                                <p class="text-3xl font-bold text-white mt-1" id="statUsers">0</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                                <span class="text-2xl">👥</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-darkGray rounded-xl p-6 border border-white/10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-400 text-sm">Total Projects</p>
+                                <p class="text-3xl font-bold text-white mt-1" id="statProjects">0</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                                <span class="text-2xl">📁</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-darkGray rounded-xl p-6 border border-white/10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-400 text-sm">Generations</p>
+                                <p class="text-3xl font-bold text-white mt-1" id="statGenerations">0</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                                <span class="text-2xl">⚡</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Weekly Statistics Chart -->
+                    <div class="lg:col-span-2 bg-darkGray rounded-xl p-6 border border-white/10">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-semibold text-white">Weekly Statistics</h2>
+                            <div class="flex space-x-2">
+                                <button onclick="setChartType('revenue')" id="btnRevenue"
+                                    class="px-3 py-1 rounded-full bg-white/10 text-gray-400 text-xs font-medium hover:bg-white/20">Revenue</button>
+                                <button onclick="setChartType('projects')" id="btnProjects"
+                                    class="px-3 py-1 rounded-full bg-electricBlue text-white text-xs font-medium">Projects</button>
+                                <button onclick="setChartType('users')" id="btnUsers"
+                                    class="px-3 py-1 rounded-full bg-white/10 text-gray-400 text-xs font-medium hover:bg-white/20">Users</button>
+                            </div>
+                        </div>
+                        <div style="height: 250px;">
+                            <canvas id="statsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Business Health -->
+                    <div class="bg-darkGray rounded-xl p-6 border border-white/10">
+                        <h2 class="text-lg font-semibold text-white mb-6">Business Health</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-gray-400 text-sm flex items-center"><span class="mr-2">🚀</span>
+                                        Generation Rate</span>
+                                    <span class="text-white font-medium" id="healthGeneration">0%</span>
+                                </div>
+                                <div class="h-2 bg-dark rounded-full overflow-hidden">
+                                    <div id="barGeneration" class="h-full bg-blue-500 rounded-full" style="width: 0%">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-gray-400 text-sm flex items-center"><span class="mr-2">👥</span>
+                                        Active Users</span>
+                                    <span class="text-white font-medium" id="healthActive">100%</span>
+                                </div>
+                                <div class="h-2 bg-dark rounded-full overflow-hidden">
+                                    <div id="barActive" class="h-full bg-green-500 rounded-full" style="width: 100%">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-gray-400 text-sm flex items-center"><span class="mr-2">📁</span>
+                                        Project Success</span>
+                                    <span class="text-white font-medium" id="healthProjects">0%</span>
+                                </div>
+                                <div class="h-2 bg-dark rounded-full overflow-hidden">
+                                    <div id="barProjects" class="h-full bg-purple-500 rounded-full" style="width: 0%">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-gray-400 text-sm flex items-center"><span class="mr-2">💳</span>
+                                        Payment Success</span>
+                                    <span class="text-white font-medium" id="healthPayments">0%</span>
+                                </div>
+                                <div class="h-2 bg-dark rounded-full overflow-hidden">
+                                    <div id="barPayments" class="h-full bg-yellow-500 rounded-full" style="width: 0%">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Table -->
+                <div class="bg-darkGray rounded-xl border border-white/10 overflow-hidden">
+                    <div class="p-6 border-b border-white/5">
+                        <h2 class="text-lg font-semibold text-white">Recent Activity</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-dark/50">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        ID</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-electricBlue uppercase tracking-wider">
+                                        Type</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-electricBlue uppercase tracking-wider">
+                                        User</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Project</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityTable" class="divide-y divide-white/5">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading activity...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plans Tab -->
+            <div id="contentPlans" class="hidden">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-blue-200 text-sm">Total API Calls</p>
+                                <p class="text-3xl font-bold text-white mt-1" id="planStatCalls">0</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                                <span class="text-2xl">📊</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-green-200 text-sm">Active Plans</p>
+                                <p class="text-3xl font-bold text-white mt-1" id="planStatActive">0</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                                <span class="text-2xl">✅</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-orange-200 text-sm">Total Plans</p>
+                                <p class="text-3xl font-bold text-white mt-1" id="planStatTotal">0</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                                <span class="text-2xl">📋</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add New Plan Form -->
+                <div class="bg-darkGray rounded-xl border border-white/10 p-6 mb-8">
+                    <div class="flex items-center space-x-2 mb-6">
+                        <span class="text-lg">➕</span>
+                        <h2 class="text-lg font-semibold text-white">Add New Plan</h2>
+                    </div>
+                    <form id="addPlanForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Plan Name</label>
+                            <input type="text" id="planName" required
+                                class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none"
+                                placeholder="e.g. Pro Plan">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Tokens (API Calls)</label>
+                            <input type="number" id="planTokens" required
+                                class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none"
+                                placeholder="e.g. 5000">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Price (₹)</label>
+                            <input type="number" step="0.01" id="planPrice" required
+                                class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none"
+                                placeholder="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Duration (Days)</label>
+                            <input type="number" id="planDuration" value="30"
+                                class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit"
+                                class="w-full py-3 rounded-xl gradient-bg text-white font-semibold hover:opacity-90 transition-all">
+                                + Add
+                            </button>
+                        </div>
+                    </form>
+                    <div class="mt-4">
+                        <label class="block text-sm text-gray-400 mb-2">Description</label>
+                        <input type="text" id="planDescription"
+                            class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none"
+                            placeholder="Brief description of the plan">
+                    </div>
+                </div>
+
+                <!-- All Plans -->
+                <div class="bg-darkGray rounded-xl border border-white/10 p-6">
+                    <div class="flex items-center space-x-2 mb-6">
+                        <span class="text-lg">📋</span>
+                        <h2 class="text-lg font-semibold text-white">All Plans</h2>
+                    </div>
+                    <div id="plansGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <p class="text-gray-500 col-span-4 text-center py-8">Loading plans...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="contentUsers" class="hidden">
+                <div class="bg-darkGray rounded-xl border border-white/10 overflow-hidden">
+                    <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-white">All Users</h2>
+                        <span class="text-gray-400 text-sm" id="userCount">0 users</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-dark/50">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        ID</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Name</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Email</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Role</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Created</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable" class="divide-y divide-white/5">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div id="contentProjects" class="hidden">
+                <div class="bg-darkGray rounded-xl border border-white/10 overflow-hidden">
+                    <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-white">All Projects</h2>
+                        <span class="text-gray-400 text-sm" id="projectCount">0 projects</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-dark/50">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        ID</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Name</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Owner</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Files</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Created</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectsTable" class="divide-y divide-white/5">
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading projects...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Tab -->
+            <div id="contentActivity" class="hidden">
+                <div class="bg-darkGray rounded-xl border border-white/10 overflow-hidden">
+                    <div class="p-6 border-b border-white/5">
+                        <h2 class="text-lg font-semibold text-white">Generation History</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-dark/50">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        ID</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Project</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        User</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTable" class="divide-y divide-white/5">
+                                <tr>
+                                    <td colspan="4" class="px-6 py-8 text-center text-gray-500">Loading history...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="contentSettings" class="hidden">
+                <!-- Header -->
+                <div class="mb-8">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <span class="text-2xl">⚙️</span>
+                        <h1 class="text-2xl font-bold text-white">Admin Settings</h1>
+                    </div>
+                    <p class="text-gray-400">Manage your admin account</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Account Information -->
+                    <div class="bg-darkGray rounded-xl border border-white/10 overflow-hidden">
+                        <div class="p-6 border-b border-white/5">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                    <span class="text-lg">👤</span>
+                                </div>
+                                <h2 class="text-lg font-semibold text-white">Account Information</h2>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between py-3 border-b border-white/5">
+                                    <span class="text-gray-400">Username</span>
+                                    <span class="text-white font-medium" id="settingsName">Admin</span>
+                                </div>
+                                <div class="flex items-center justify-between py-3 border-b border-white/5">
+                                    <span class="text-gray-400">Email</span>
+                                    <span class="text-white font-medium" id="settingsEmail">admin@codekotha.ai</span>
+                                </div>
+                                <div class="flex items-center justify-between py-3 border-b border-white/5">
+                                    <span class="text-gray-400">Role</span>
+                                    <span
+                                        class="px-3 py-1 rounded-full bg-blue-500 text-white text-xs font-semibold">Super_admin</span>
+                                </div>
+                                <div class="flex items-center justify-between py-3">
+                                    <span class="text-gray-400">Member Since</span>
+                                    <span class="text-white font-medium" id="settingsCreated">Jan 05, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Change Password -->
+                    <div class="bg-darkGray rounded-xl border border-white/10 overflow-hidden">
+                        <div class="p-6 border-b border-white/5">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                                    <span class="text-lg">🔒</span>
+                                </div>
+                                <h2 class="text-lg font-semibold text-white">Change Password</h2>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <form id="changePasswordForm" class="space-y-5">
+                                <div>
+                                    <label class="block text-sm text-gray-400 mb-2">Current Password</label>
+                                    <input type="password" id="currentPassword" required
+                                        class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none"
+                                        placeholder="Enter current password">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-400 mb-2">New Password</label>
+                                    <input type="password" id="newPassword" required minlength="8"
+                                        class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none"
+                                        placeholder="Enter new password">
+                                    <p class="text-xs text-electricBlue mt-1">Minimum 8 characters</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-400 mb-2">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" required
+                                        class="w-full px-4 py-3 rounded-xl bg-dark border border-white/10 text-white focus:border-electricBlue focus:outline-none"
+                                        placeholder="Confirm new password">
+                                </div>
+                                <div id="passwordError" class="text-red-400 text-sm hidden"></div>
+                                <div id="passwordSuccess" class="text-green-400 text-sm hidden"></div>
+                                <button type="submit"
+                                    class="w-full py-3 rounded-xl gradient-bg text-white font-semibold hover:opacity-90 transition-all flex items-center justify-center space-x-2">
+                                    <span>🔑</span>
+                                    <span>Change Password</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="mt-6 bg-darkGray rounded-xl border border-red-500/30 overflow-hidden">
+                    <div class="p-6 border-b border-red-500/20">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                                <span class="text-lg">⚠️</span>
+                            </div>
+                            <h2 class="text-lg font-semibold text-red-400">Danger Zone</h2>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-white font-medium">Delete All Data</h3>
+                                <p class="text-gray-400 text-sm mt-1">Permanently delete all projects and generation
+                                    history</p>
+                            </div>
+                            <button onclick="confirmDeleteAll()"
+                                class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all text-sm font-medium">
+                                Delete All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Tab -->
+            <div id="contentTransactions" class="hidden">
+                <!-- Page Header -->
+                <div class="mb-8">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <span class="text-2xl">💳</span>
+                        <h1 class="text-2xl font-bold text-white">Transactions</h1>
+                    </div>
+                    <p class="text-gray-400">View all payment transactions from Razorpay</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                    <div class="bg-darkGray rounded-xl p-5 border border-white/10">
+                        <p class="text-gray-400 text-xs uppercase mb-1">Total Transactions</p>
+                        <p id="txnTotal" class="text-2xl font-bold text-white">0</p>
+                    </div>
+                    <div class="bg-darkGray rounded-xl p-5 border border-white/10">
+                        <p class="text-gray-400 text-xs uppercase mb-1">Successful</p>
+                        <p id="txnSuccess" class="text-2xl font-bold text-green-400">0</p>
+                    </div>
+                    <div class="bg-darkGray rounded-xl p-5 border border-white/10">
+                        <p class="text-gray-400 text-xs uppercase mb-1">Failed</p>
+                        <p id="txnFailed" class="text-2xl font-bold text-red-400">0</p>
+                    </div>
+                    <div class="bg-darkGray rounded-xl p-5 border border-white/10">
+                        <p class="text-gray-400 text-xs uppercase mb-1">Pending</p>
+                        <p id="txnPending" class="text-2xl font-bold text-yellow-400">0</p>
+                    </div>
+                    <div class="bg-darkGray rounded-xl p-5 border border-white/10">
+                        <p class="text-gray-400 text-xs uppercase mb-1">Total Revenue</p>
+                        <p id="txnRevenue" class="text-2xl font-bold text-electricBlue">₹0</p>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="flex space-x-2 mb-6">
+                    <button onclick="filterTransactions('all')" id="filterAll"
+                        class="px-4 py-2 rounded-lg bg-electricBlue text-white text-sm font-medium">
+                        All
+                    </button>
+                    <button onclick="filterTransactions('paid')" id="filterPaid"
+                        class="px-4 py-2 rounded-lg bg-white/10 text-gray-400 text-sm font-medium hover:bg-white/20">
+                        Completed
+                    </button>
+                    <button onclick="filterTransactions('created')" id="filterCreated"
+                        class="px-4 py-2 rounded-lg bg-white/10 text-gray-400 text-sm font-medium hover:bg-white/20">
+                        Pending
+                    </button>
+                    <button onclick="filterTransactions('failed')" id="filterFailed"
+                        class="px-4 py-2 rounded-lg bg-white/10 text-gray-400 text-sm font-medium hover:bg-white/20">
+                        Failed
+                    </button>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="bg-darkGray rounded-xl border border-white/10 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-dark/50">
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">User
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Plan
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Amount
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Razorpay
+                                        IDs</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Status
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Date
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTable" class="divide-y divide-white/5">
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading transactions...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // State
+        let adminUser = null;
+        let statsChart = null;
+        let statsData = null;
+
+        // Check for existing session
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedAdmin = localStorage.getItem('adminUser');
+            if (savedAdmin) {
+                adminUser = JSON.parse(savedAdmin);
+                showDashboard();
+            }
+        });
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    adminUser = data.admin;
+                    localStorage.setItem('adminUser', JSON.stringify(adminUser));
+                    showDashboard();
+                } else {
+                    errorDiv.textContent = data.error;
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error. Please try again.';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            document.getElementById('adminName').textContent = adminUser?.name || 'admin';
+            loadStats();
+            loadActivity();
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('adminUser');
+            adminUser = null;
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        // Toggle dropdown
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.relative')) {
+                document.getElementById('dropdownMenu').classList.add('hidden');
+            }
+        });
+
+        // Tab navigation
+        function showTab(tab) {
+            // Hide all content
+            document.querySelectorAll('[id^="content"]').forEach(el => el.classList.add('hidden'));
+            // Show selected content
+            document.getElementById('content' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+
+            // Update tab styles
+            document.querySelectorAll('[id^="tab"]').forEach(el => {
+                el.classList.remove('bg-electricBlue', 'text-white');
+                el.classList.add('text-gray-400', 'hover:text-white', 'hover:bg-white/5');
+            });
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('bg-electricBlue', 'text-white');
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('text-gray-400', 'hover:text-white', 'hover:bg-white/5');
+
+            // Load data for tab
+            if (tab === 'users') loadUsers();
+            if (tab === 'projects') loadProjects();
+            if (tab === 'activity') loadHistory();
+        }
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/admin/stats');
+                const data = await response.json();
+
+                if (data.success) {
+                    statsData = data.stats;
+                    document.getElementById('statRevenue').textContent = (data.stats.totalRevenue || 0).toLocaleString();
+                    document.getElementById('statUsers').textContent = data.stats.totalUsers || 0;
+                    document.getElementById('statProjects').textContent = data.stats.totalProjects || 0;
+                    document.getElementById('statGenerations').textContent = data.stats.totalGenerations || 0;
+
+                    // Update health metrics
+                    const genRate = data.stats.totalProjects > 0 ? Math.min(100, Math.round((data.stats.totalGenerations / Math.max(1, data.stats.totalProjects)) * 100)) : 0;
+                    document.getElementById('healthGeneration').textContent = genRate + '%';
+                    document.getElementById('barGeneration').style.width = genRate + '%';
+
+                    const projectSuccess = data.stats.totalProjects > 0 ? 100 : 0;
+                    document.getElementById('healthProjects').textContent = projectSuccess + '%';
+                    document.getElementById('barProjects').style.width = projectSuccess + '%';
+
+                    // Payment success rate
+                    const paymentRate = data.stats.totalPayments > 0 ? Math.round((data.stats.successfulPayments / data.stats.totalPayments) * 100) : 0;
+                    document.getElementById('healthPayments').textContent = paymentRate + '%';
+                    document.getElementById('barPayments').style.width = paymentRate + '%';
+
+                    initChart('revenue');
+                }
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        // Get last 7 days labels
+        function getLast7DaysLabels() {
+            const labels = [];
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(days[date.getDay()]);
+            }
+            return labels;
+        }
+
+        // Process weekly data from API
+        function processWeeklyData(weeklyData) {
+            const dataMap = {};
+            const result = [0, 0, 0, 0, 0, 0, 0];
+
+            // Create a map of dates to counts
+            if (weeklyData && Array.isArray(weeklyData)) {
+                weeklyData.forEach(item => {
+                    const dateStr = new Date(item.date).toDateString();
+                    dataMap[dateStr] = item.count;
+                });
+            }
+
+            // Fill in the last 7 days
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toDateString();
+                result[6 - i] = dataMap[dateStr] || 0;
+            }
+
+            return result;
+        }
+
+        // Process weekly revenue data (uses 'total' instead of 'count')
+        function processWeeklyRevenue(weeklyData) {
+            const dataMap = {};
+            const result = [0, 0, 0, 0, 0, 0, 0];
+
+            if (weeklyData && Array.isArray(weeklyData)) {
+                weeklyData.forEach(item => {
+                    const dateStr = new Date(item.date).toDateString();
+                    dataMap[dateStr] = parseFloat(item.total) || 0;
+                });
+            }
+
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toDateString();
+                result[6 - i] = dataMap[dateStr] || 0;
+            }
+
+            return result;
+        }
+
+        // Initialize chart with specific data type
+        function initChart(type = 'projects') {
+            const ctx = document.getElementById('statsChart').getContext('2d');
+
+            if (statsChart) statsChart.destroy();
+
+            const labels = getLast7DaysLabels();
+            let data, label, color;
+
+            switch (type) {
+                case 'revenue':
+                    data = processWeeklyRevenue(statsData?.weeklyRevenue);
+                    label = 'Revenue (₹)';
+                    color = '#3b82f6';
+                    break;
+                case 'users':
+                    data = processWeeklyData(statsData?.weeklyUsers);
+                    label = 'New Users';
+                    color = '#8b5cf6';
+                    break;
+                case 'projects':
+                default:
+                    data = processWeeklyData(statsData?.weeklyProjects);
+                    label = 'Projects Created';
+                    color = '#f97316';
+                    break;
+            }
+
+            statsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: color + '20',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: color,
+                        pointBorderColor: '#1e293b',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            borderColor: '#334155',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: {
+                                color: '#94a3b8',
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        // Set chart type
+        function setChartType(type) {
+            // Update button styles
+            document.querySelectorAll('[id^="btn"]').forEach(btn => {
+                btn.classList.remove('bg-electricBlue', 'text-white');
+                btn.classList.add('bg-white/10', 'text-gray-400');
+            });
+            const btnId = 'btn' + type.charAt(0).toUpperCase() + type.slice(1);
+            document.getElementById(btnId).classList.add('bg-electricBlue', 'text-white');
+            document.getElementById(btnId).classList.remove('bg-white/10', 'text-gray-400');
+
+            // Reinitialize chart with new data type
+            initChart(type);
+        }
+
+        // Load activity
+        async function loadActivity() {
+            try {
+                const response = await fetch('/api/admin/activity');
+                const data = await response.json();
+
+                if (data.success && data.activity.length > 0) {
+                    const tbody = document.getElementById('activityTable');
+                    tbody.innerHTML = data.activity.map(item => `
+                        <tr class="hover:bg-white/5">
+                            <td class="px-6 py-4 text-sm text-gray-300">#${item.id}</td>
+                            <td class="px-6 py-4 text-sm text-electricBlue">Generation</td>
+                            <td class="px-6 py-4 text-sm text-electricBlue">${item.user_email || 'Unknown'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-300">${item.project_name || 'Unnamed'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-400">${new Date(item.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    document.getElementById('activityTable').innerHTML = `
+                        <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No activity yet</td></tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load activity:', error);
+            }
+        }
+
+        // Load users
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/admin/users');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('userCount').textContent = data.users.length + ' users';
+                    const tbody = document.getElementById('usersTable');
+                    tbody.innerHTML = data.users.map(user => `
+                        <tr class="hover:bg-white/5">
+                            <td class="px-6 py-4 text-sm text-gray-300">#${user.id}</td>
+                            <td class="px-6 py-4 text-sm text-white font-medium">${user.name || 'No name'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-300">${user.email}</td>
+                            <td class="px-6 py-4 text-sm">
+                                ${user.is_admin ? '<span class="px-2 py-1 rounded bg-orange-500/20 text-orange-400 text-xs">Admin</span>' : '<span class="px-2 py-1 rounded bg-blue-500/20 text-blue-400 text-xs">User</span>'}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-400">${new Date(user.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load users:', error);
+            }
+        }
+
+        // Load projects
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/admin/projects');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('projectCount').textContent = data.projects.length + ' projects';
+                    const tbody = document.getElementById('projectsTable');
+                    tbody.innerHTML = data.projects.map(project => `
+                        <tr class="hover:bg-white/5">
+                            <td class="px-6 py-4 text-sm text-gray-300">#${project.id}</td>
+                            <td class="px-6 py-4 text-sm text-white font-medium">${project.name}</td>
+                            <td class="px-6 py-4 text-sm text-gray-300">${project.user_email || 'Unknown'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-300">${project.file_count || 0} files</td>
+                            <td class="px-6 py-4 text-sm">
+                                <span class="px-2 py-1 rounded ${project.status === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'} text-xs">${project.status}</span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-400">${new Date(project.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load projects:', error);
+            }
+        }
+
+        // Load history
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/admin/activity');
+                const data = await response.json();
+
+                if (data.success && data.activity.length > 0) {
+                    const tbody = document.getElementById('historyTable');
+                    tbody.innerHTML = data.activity.map(item => `
+                        <tr class="hover:bg-white/5">
+                            <td class="px-6 py-4 text-sm text-gray-300">#${item.id}</td>
+                            <td class="px-6 py-4 text-sm text-white">${item.project_name || 'Unnamed'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-300">${item.user_email || 'Unknown'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-400">${new Date(item.created_at).toLocaleString()}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    document.getElementById('historyTable').innerHTML = `
+                        <tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">No history yet</td></tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load history:', error);
+            }
+        }
+
+        // Load settings data
+        async function loadSettings() {
+            if (adminUser) {
+                document.getElementById('settingsName').textContent = adminUser.name || 'Admin';
+                document.getElementById('settingsEmail').textContent = adminUser.email || 'admin@codekotha.ai';
+
+                // Try to get full user data
+                try {
+                    const response = await fetch('/api/admin/users');
+                    const data = await response.json();
+                    if (data.success) {
+                        const admin = data.users.find(u => u.email === adminUser.email);
+                        if (admin && admin.created_at) {
+                            const date = new Date(admin.created_at);
+                            document.getElementById('settingsCreated').textContent = date.toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: '2-digit',
+                                year: 'numeric'
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.error('Failed to load admin details:', e);
+                }
+            }
+        }
+
+        // Change password form
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('passwordError');
+            const successDiv = document.getElementById('passwordSuccess');
+
+            // Hide previous messages
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+
+            // Validate passwords match
+            if (newPassword !== confirmPassword) {
+                errorDiv.textContent = 'New passwords do not match';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Validate min length
+            if (newPassword.length < 8) {
+                errorDiv.textContent = 'Password must be at least 8 characters';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: adminUser.email,
+                        currentPassword,
+                        newPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    successDiv.textContent = 'Password changed successfully!';
+                    successDiv.classList.remove('hidden');
+                    document.getElementById('changePasswordForm').reset();
+                } else {
+                    errorDiv.textContent = data.error || 'Failed to change password';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error. Please try again.';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        // Confirm delete all data
+        function confirmDeleteAll() {
+            if (confirm('⚠️ WARNING: This will permanently delete ALL projects and generation history. This action cannot be undone. Are you sure?')) {
+                if (confirm('🚨 FINAL WARNING: This is destructive and irreversible. Type "DELETE" in the next prompt to confirm.')) {
+                    const input = prompt('Type DELETE to confirm:');
+                    if (input === 'DELETE') {
+                        deleteAllData();
+                    } else {
+                        alert('Deletion cancelled.');
+                    }
+                }
+            }
+        }
+
+        // Delete all data
+        async function deleteAllData() {
+            try {
+                const response = await fetch('/api/admin/delete-all', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('All data has been deleted.');
+                    loadStats();
+                    loadActivity();
+                } else {
+                    alert('Failed to delete data: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Network error. Please try again.');
+            }
+        }
+
+        // Update showTab to load settings and plans
+        const originalShowTab = showTab;
+        showTab = function (tab) {
+            originalShowTab(tab);
+            if (tab === 'settings') loadSettings();
+            if (tab === 'plans') loadPlans();
+        };
+
+        // ==================== PLANS MANAGEMENT ====================
+
+        let allPlans = [];
+
+        // Load plans
+        async function loadPlans() {
+            try {
+                const response = await fetch('/api/admin/plans');
+                const data = await response.json();
+
+                if (data.success) {
+                    allPlans = data.plans;
+
+                    // Update stats
+                    document.getElementById('planStatActive').textContent = data.stats.activePlans;
+                    document.getElementById('planStatTotal').textContent = data.stats.totalPlans;
+
+                    // Calculate total tokens
+                    const totalTokens = data.plans.reduce((sum, p) => sum + (p.tokens || 0), 0);
+                    document.getElementById('planStatCalls').textContent = totalTokens.toLocaleString();
+
+                    // Render plan cards
+                    renderPlanCards(data.plans);
+                }
+            } catch (error) {
+                console.error('Failed to load plans:', error);
+            }
+        }
+
+        // Render plan cards
+        function renderPlanCards(plans) {
+            const grid = document.getElementById('plansGrid');
+
+            if (plans.length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 col-span-4 text-center py-8">No plans yet. Add one above!</p>';
+                return;
+            }
+
+            grid.innerHTML = plans.map(plan => `
+                <div class="bg-dark rounded-xl p-5 border ${plan.is_popular ? 'border-green-500' : 'border-white/10'} relative">
+                    ${plan.is_active ? '<span class="absolute top-3 right-3 px-2 py-0.5 rounded bg-green-500/20 text-green-400 text-xs">Active</span>' : '<span class="absolute top-3 right-3 px-2 py-0.5 rounded bg-red-500/20 text-red-400 text-xs">Inactive</span>'}
+                    <h3 class="text-lg font-bold text-white mb-1">${plan.name}</h3>
+                    <p class="text-2xl font-bold text-electricBlue">${plan.tokens.toLocaleString()} <span class="text-sm text-gray-400">tokens</span></p>
+                    <p class="text-lg font-semibold text-white mt-2">₹${parseFloat(plan.price).toLocaleString()} <span class="text-sm text-gray-400">/ ${plan.duration_days} days</span></p>
+                    <p class="text-gray-500 text-sm mt-2">${plan.description || 'No description'}</p>
+                    <div class="flex space-x-2 mt-4">
+                        <button onclick="editPlan(${plan.id})" class="flex-1 py-2 rounded-lg bg-white/5 text-white text-sm hover:bg-white/10 transition-all flex items-center justify-center space-x-1">
+                            <span>✏️</span>
+                            <span>Edit</span>
+                        </button>
+                        <button onclick="deletePlan(${plan.id})" class="py-2 px-3 rounded-lg bg-red-500/20 text-red-400 text-sm hover:bg-red-500/30 transition-all">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add plan form
+        document.getElementById('addPlanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('planName').value;
+            const tokens = parseInt(document.getElementById('planTokens').value) || 0;
+            const price = parseFloat(document.getElementById('planPrice').value) || 0;
+            const duration_days = parseInt(document.getElementById('planDuration').value) || 30;
+            const description = document.getElementById('planDescription').value;
+
+            try {
+                const response = await fetch('/api/admin/plans', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, tokens, price, duration_days, description, is_active: true })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('addPlanForm').reset();
+                    document.getElementById('planDescription').value = '';
+                    loadPlans();
+                } else {
+                    alert('Failed to add plan: ' + data.error);
+                }
+            } catch (error) {
+                alert('Network error. Please try again.');
+            }
+        });
+
+        // Edit plan
+        function editPlan(id) {
+            const plan = allPlans.find(p => p.id === id);
+            if (!plan) return;
+
+            const newName = prompt('Plan Name:', plan.name);
+            if (newName === null) return;
+
+            const newTokens = prompt('Tokens:', plan.tokens);
+            if (newTokens === null) return;
+
+            const newPrice = prompt('Price (₹):', plan.price);
+            if (newPrice === null) return;
+
+            const newDuration = prompt('Duration (Days):', plan.duration_days);
+            if (newDuration === null) return;
+
+            const newDescription = prompt('Description:', plan.description || '');
+            if (newDescription === null) return;
+
+            const isActive = confirm('Is this plan active?');
+            const isPopular = confirm('Is this the most popular plan?');
+
+            updatePlan(id, {
+                name: newName,
+                tokens: parseInt(newTokens),
+                price: parseFloat(newPrice),
+                duration_days: parseInt(newDuration),
+                description: newDescription,
+                features: plan.features,
+                is_active: isActive,
+                is_popular: isPopular
+            });
+        }
+
+        // Update plan API call
+        async function updatePlan(id, planData) {
+            try {
+                const response = await fetch(`/api/admin/plans/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(planData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    loadPlans();
+                } else {
+                    alert('Failed to update plan: ' + data.error);
+                }
+            } catch (error) {
+                alert('Network error. Please try again.');
+            }
+        }
+
+        // Delete plan
+        async function deletePlan(id) {
+            if (!confirm('Are you sure you want to delete this plan?')) return;
+
+            try {
+                const response = await fetch(`/api/admin/plans/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    loadPlans();
+                } else {
+                    alert('Failed to delete plan: ' + data.error);
+                }
+            } catch (error) {
+                alert('Network error. Please try again.');
+            }
+        }
+
+        // ==================== TRANSACTIONS ====================
+
+        let allTransactions = [];
+        let currentFilter = 'all';
+
+        // Load transactions
+        async function loadTransactions() {
+            try {
+                const response = await fetch('/api/admin/transactions');
+                const data = await response.json();
+
+                if (data.success) {
+                    allTransactions = data.transactions;
+
+                    // Update stats
+                    document.getElementById('txnTotal').textContent = data.stats.total;
+                    document.getElementById('txnSuccess').textContent = data.stats.successful;
+                    document.getElementById('txnFailed').textContent = data.stats.failed;
+                    document.getElementById('txnPending').textContent = data.stats.pending;
+                    document.getElementById('txnRevenue').textContent = '₹' + data.stats.revenue.toLocaleString();
+
+                    // Render table
+                    renderTransactionsTable(allTransactions);
+                }
+            } catch (error) {
+                console.error('Failed to load transactions:', error);
+            }
+        }
+
+        // Render transactions table
+        function renderTransactionsTable(transactions) {
+            const table = document.getElementById('transactionsTable');
+
+            if (transactions.length === 0) {
+                table.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No transactions found</td></tr>';
+                return;
+            }
+
+            table.innerHTML = transactions.map(txn => {
+                const statusColors = {
+                    paid: 'bg-green-500/20 text-green-400',
+                    created: 'bg-yellow-500/20 text-yellow-400',
+                    failed: 'bg-red-500/20 text-red-400'
+                };
+                const statusLabels = {
+                    paid: 'Completed',
+                    created: 'Pending',
+                    failed: 'Failed'
+                };
+                const date = new Date(txn.created_at);
+                const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+                const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                return `
+                    <tr class="hover:bg-white/5 transition-colors">
+                        <td class="px-6 py-4">
+                            <div>
+                                <p class="text-white font-medium">${txn.user_name || 'Unknown'}</p>
+                                <p class="text-gray-500 text-xs">${txn.user_email || ''}</p>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded bg-electricBlue/20 text-electricBlue text-xs font-medium">${txn.plan_name || 'Unknown'}</span>
+                        </td>
+                        <td class="px-6 py-4 text-white font-medium">₹${parseFloat(txn.amount).toLocaleString()}</td>
+                        <td class="px-6 py-4">
+                            <div class="text-xs">
+                                ${txn.razorpay_order_id ? `<p class="text-gray-400">Order: <span class="text-gray-300">${txn.razorpay_order_id.substring(0, 20)}...</span></p>` : ''}
+                                ${txn.razorpay_payment_id ? `<p class="text-gray-400">Payment: <span class="text-gray-300">${txn.razorpay_payment_id.substring(0, 20)}...</span></p>` : '<p class="text-gray-500">-</p>'}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded ${statusColors[txn.status]} text-xs font-medium">${statusLabels[txn.status]}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <p class="text-white text-sm">${dateStr}</p>
+                            <p class="text-gray-500 text-xs">${timeStr}</p>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Filter transactions
+        function filterTransactions(status) {
+            currentFilter = status;
+
+            // Update button styles
+            ['filterAll', 'filterPaid', 'filterCreated', 'filterFailed'].forEach(id => {
+                const btn = document.getElementById(id);
+                btn.classList.remove('bg-electricBlue', 'text-white');
+                btn.classList.add('bg-white/10', 'text-gray-400');
+            });
+
+            const btnMap = { all: 'filterAll', paid: 'filterPaid', created: 'filterCreated', failed: 'filterFailed' };
+            const activeBtn = document.getElementById(btnMap[status]);
+            activeBtn.classList.add('bg-electricBlue', 'text-white');
+            activeBtn.classList.remove('bg-white/10', 'text-gray-400');
+
+            // Filter and render
+            const filtered = status === 'all' ? allTransactions : allTransactions.filter(t => t.status === status);
+            renderTransactionsTable(filtered);
+        }
+
+        // Update showTab to load transactions
+        const baseShowTab = showTab;
+        showTab = function (tab) {
+            baseShowTab(tab);
+            if (tab === 'transactions') loadTransactions();
+        };
+    </script>
+
+    <!-- Voice Assistant -->
+    <script src="/js/voice-assistant.js"></script>
+</body>
+
+</html>

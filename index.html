@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codeকথা AI - Build Websites with AI</title>
+    <meta name="description" content="Generate, preview, and learn to build websites with AI-powered assistance.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0a0a0f',
+                        darkGray: '#12121a',
+                        electricBlue: '#3b82f6',
+                        softPurple: '#8b5cf6',
+                        lightGray: '#e5e7eb',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-bengali {
+            font-family: 'Hind Siliguri', 'Inter', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-border {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+
+        .glow {
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Login card and transition animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.4s ease-in forwards;
+        }
+
+        .login-overlay {
+            background: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #1a1a2e 100%);
+        }
+
+        .login-card {
+            background: linear-gradient(135deg, #12121a 0%, #1a1a2e 100%);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(59, 130, 246, 0.1),
+                0 0 80px rgba(139, 92, 246, 0.05);
+        }
+
+        .signin-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .signin-btn:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
+        }
+
+        .main-content {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Subtle brand name animation */
+        @keyframes brand-glow {
+
+            0%,
+            100% {
+                opacity: 1;
+                text-shadow: 0 0 10px rgba(59, 130, 246, 0.5),
+                    0 0 20px rgba(139, 92, 246, 0.3),
+                    0 0 30px rgba(59, 130, 246, 0.1);
+            }
+
+            50% {
+                opacity: 0.9;
+                text-shadow: 0 0 15px rgba(139, 92, 246, 0.7),
+                    0 0 30px rgba(59, 130, 246, 0.5),
+                    0 0 45px rgba(139, 92, 246, 0.2);
+            }
+        }
+
+        .brand-animate {
+            animation: brand-glow 3s ease-in-out infinite;
+        }
+
+        /* Typewriter animation for hero headline */
+        @keyframes typewriter {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blink-cursor {
+
+            0%,
+            50% {
+                border-color: rgba(139, 92, 246, 1);
+            }
+
+            51%,
+            100% {
+                border-color: transparent;
+            }
+        }
+
+        .typewriter-text {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid rgba(139, 92, 246, 1);
+            animation:
+                typewriter 2.5s steps(26, end) forwards,
+                blink-cursor 0.75s step-end infinite;
+        }
+
+        .typewriter-delay {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+            animation: typewriter 1.5s steps(10, end) 3s forwards;
+        }
+
+        /* Typing cursor for code preview */
+        .typing-cursor {
+            color: #8b5cf6;
+            font-weight: normal;
+            animation: cursor-blink 1s ease-in-out infinite;
+        }
+
+        @keyframes cursor-blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-dark text-lightGray antialiased">
+
+    <!-- Login/Signup Overlay (Hidden Initially) -->
+    <div id="login-overlay" class="fixed inset-0 z-[100] login-overlay flex items-center justify-center"
+        style="display: none;">
+        <div class="login-card rounded-2xl p-8 w-full max-w-md mx-4">
+
+            <!-- Sign In Form -->
+            <div id="signin-form-container">
+                <!-- Login Header -->
+                <div class="text-center mb-8">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-gradient-to-r from-electricBlue to-softPurple flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-xl">AI</span>
+                    </div>
+                    <h1 class="text-3xl font-bold text-white mb-2">Welcome back</h1>
+                    <p class="text-gray-400">Please enter your details to continue</p>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="space-y-5">
+                    <!-- Email Field -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email address</label>
+                        <input type="email"
+                            class="w-full px-4 py-3 bg-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-softPurple focus:border-transparent outline-none transition-all"
+                            placeholder="Enter your email">
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                        <input type="password"
+                            class="w-full px-4 py-3 bg-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-softPurple focus:border-transparent outline-none transition-all"
+                            placeholder="Enter your password">
+                    </div>
+
+                    <!-- Remember & Forgot -->
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox"
+                                class="w-4 h-4 text-softPurple bg-dark border-white/20 rounded focus:ring-softPurple">
+                            <span class="text-sm text-gray-400">Remember for 30 days</span>
+                        </label>
+                        <a href="#"
+                            class="text-sm text-softPurple hover:text-electricBlue font-medium transition-colors">Forgot
+                            password</a>
+                    </div>
+
+                    <!-- Sign In Button -->
+                    <button type="submit" id="signin-btn" class="w-full py-3.5 signin-btn font-semibold rounded-xl">
+                        Sign in
+                    </button>
+
+                    <!-- Google Sign In -->
+                    <button type="button"
+                        class="w-full py-3.5 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center space-x-3 hover:bg-white/10 transition-colors">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path fill="#4285F4"
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853"
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05"
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                            <path fill="#EA4335"
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                        </svg>
+                        <span class="text-gray-300 font-medium">Sign in with Google</span>
+                    </button>
+
+                    <!-- Sign Up Link -->
+                    <p class="text-center text-gray-400 text-sm">
+                        Don't have an account? <a href="#" onclick="toggleAuthForm(event)"
+                            class="text-softPurple hover:text-electricBlue font-medium transition-colors">Sign up</a>
+                    </p>
+                </form>
+            </div>
+
+            <!-- Sign Up Form (Hidden by default) -->
+            <div id="signup-form-container" style="display: none;">
+                <!-- Signup Header -->
+                <div class="text-center mb-8">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-gradient-to-r from-electricBlue to-softPurple flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-xl">AI</span>
+                    </div>
+                    <h1 class="text-3xl font-bold text-white mb-2">Create account</h1>
+                    <p class="text-gray-400">Start building amazing websites with AI</p>
+                </div>
+
+                <!-- Signup Form -->
+                <form id="signup-form" class="space-y-5">
+                    <!-- Name Field -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Full name</label>
+                        <input type="text"
+                            class="w-full px-4 py-3 bg-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-softPurple focus:border-transparent outline-none transition-all"
+                            placeholder="Enter your name">
+                    </div>
+
+                    <!-- Email Field -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email address</label>
+                        <input type="email"
+                            class="w-full px-4 py-3 bg-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-softPurple focus:border-transparent outline-none transition-all"
+                            placeholder="Enter your email">
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                        <input type="password"
+                            class="w-full px-4 py-3 bg-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-softPurple focus:border-transparent outline-none transition-all"
+                            placeholder="Create a password">
+                    </div>
+
+                    <!-- Terms Checkbox -->
+                    <div class="flex items-start space-x-2">
+                        <input type="checkbox"
+                            class="w-4 h-4 mt-0.5 text-softPurple bg-dark border-white/20 rounded focus:ring-softPurple">
+                        <span class="text-sm text-gray-400">I agree to the <a href="#"
+                                class="text-softPurple hover:text-electricBlue">Terms of Service</a> and <a href="#"
+                                class="text-softPurple hover:text-electricBlue">Privacy Policy</a></span>
+                    </div>
+
+                    <!-- Sign Up Button -->
+                    <button type="submit" id="signup-btn" class="w-full py-3.5 signin-btn font-semibold rounded-xl">
+                        Create account
+                    </button>
+
+                    <!-- Google Sign Up -->
+                    <button type="button"
+                        class="w-full py-3.5 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center space-x-3 hover:bg-white/10 transition-colors">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path fill="#4285F4"
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853"
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05"
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                            <path fill="#EA4335"
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                        </svg>
+                        <span class="text-gray-300 font-medium">Sign up with Google</span>
+                    </button>
+
+                    <!-- Sign In Link -->
+                    <p class="text-center text-gray-400 text-sm">
+                        Already have an account? <a href="#" onclick="toggleAuthForm(event)"
+                            class="text-softPurple hover:text-electricBlue font-medium transition-colors">Sign in</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div id="main-content">
+
+        <!-- Navbar -->
+        <nav class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-md border-b border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16 md:h-20">
+                    <!-- Logo -->
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-lg gradient-border flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">AI</span>
+                        </div>
+                        <span class="text-xl font-bold text-white brand-animate font-bengali">Codeকথা AI</span>
+                    </div>
+
+                    <!-- Desktop Navigation -->
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="#features"
+                            class="text-gray-400 hover:text-white transition-colors duration-200">Features</a>
+                        <a href="#how-it-works"
+                            class="text-gray-400 hover:text-white transition-colors duration-200">How It
+                            Works</a>
+                        <a href="#preview"
+                            class="text-gray-400 hover:text-white transition-colors duration-200">Preview</a>
+                        <a href="#learn" class="text-gray-400 hover:text-white transition-colors duration-200">Learn</a>
+                        <a href="#pricing"
+                            class="text-gray-400 hover:text-white transition-colors duration-200">Pricing</a>
+                        <a href="about.html"
+                            class="text-gray-400 hover:text-white transition-colors duration-200">About</a>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex items-center space-x-4">
+                        <button id="show-login-btn"
+                            class="hidden sm:inline-block text-gray-400 hover:text-white transition-colors duration-200">Sign
+                            In</button>
+                        <button onclick="showLoginOverlay()"
+                            class="px-4 py-2 rounded-lg bg-gradient-to-r from-electricBlue to-softPurple text-white font-medium hover:opacity-90 transition-opacity duration-200">
+                            Get Started Free
+                        </button>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="md:hidden p-2 text-gray-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+            <!-- Background Glow Effects -->
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-electricBlue/20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-softPurple/20 rounded-full blur-3xl"></div>
+
+            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <!-- Badge -->
+                <div class="inline-flex items-center px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-8">
+                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+                    <span class="text-sm text-gray-400">AI-Powered Website Generation</span>
+                </div>
+
+                <!-- Main Heading with Typewriter Effect -->
+                <h1
+                    class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 whitespace-nowrap">
+                    <span class="typewriter-text">Build Websites with <span class="gradient-text">AI Magic</span></span>
+                </h1>
+
+                <!-- Subheading -->
+                <p class="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed">
+                    Describe your vision, and watch your website come to life. Get instant live previews,
+                    learn as you build, and export production-ready code in seconds.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                    <button onclick="showLoginOverlay()"
+                        class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-electricBlue to-softPurple text-white font-semibold text-lg hover:opacity-90 transition-all duration-200 glow">
+                        Start Building Free →
+                    </button>
+                    <a href="#"
+                        class="w-full sm:w-auto px-8 py-4 rounded-xl border border-white/20 text-white font-semibold text-lg hover:bg-white/5 transition-all duration-200">
+                        Watch Demo
+                    </a>
+                </div>
+
+                <!-- Hero Visual - Code Preview Mock with Typing Animation -->
+                <div class="relative max-w-4xl mx-auto">
+                    <div class="rounded-2xl border border-white/10 bg-darkGray p-2 glow">
+                        <!-- Window Bar -->
+                        <div class="flex items-center space-x-2 px-4 py-3 border-b border-white/5">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span class="ml-4 text-sm text-gray-500">AI Website Builder</span>
+                            <span class="ml-auto flex items-center space-x-1">
+                                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                <span class="text-xs text-green-400">Live</span>
+                            </span>
+                        </div>
+                        <!-- Content Area -->
+                        <div class="grid md:grid-cols-2 divide-x divide-white/5">
+                            <!-- Code Side -->
+                            <div class="p-4 text-left">
+                                <p class="text-xs text-gray-500 mb-2">Generated Code</p>
+                                <pre
+                                    class="text-sm text-gray-300 font-mono leading-relaxed"><code id="typing-code"></code><span id="cursor" class="typing-cursor">▋</span></pre>
+                            </div>
+                            <!-- Preview Side -->
+                            <div class="p-4 bg-white/5">
+                                <p class="text-xs text-gray-500 mb-2">Live Preview</p>
+                                <div
+                                    class="bg-white rounded-lg p-4 text-center min-h-[80px] flex flex-col justify-center">
+                                    <h3 id="preview-heading" class="text-xl font-bold text-gray-800"></h3>
+                                    <p id="preview-paragraph" class="text-gray-600 text-sm"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typing Animation Script -->
+                <script>
+                        (function () {
+                            // Pre-formatted code lines with HTML entities
+                            const codeLines = [
+                                {
+                                    html: '<span class="text-softPurple">&lt;section</span> <span class="text-electricBlue">class=</span><span class="text-green-400">"hero"</span><span class="text-softPurple">&gt;</span>',
+                                    plain: '<section class="hero">',
+                                    delay: 100
+                                },
+                                {
+                                    html: '  <span class="text-softPurple">&lt;h1&gt;</span>Welcome<span class="text-softPurple">&lt;/h1&gt;</span>',
+                                    plain: '  <h1>Welcome</h1>',
+                                    delay: 100,
+                                    preview: { type: 'heading', text: 'Welcome' }
+                                },
+                                {
+                                    html: '  <span class="text-softPurple">&lt;p&gt;</span>Your AI site<span class="text-softPurple">&lt;/p&gt;</span>',
+                                    plain: '  <p>Your AI site</p>',
+                                    delay: 100,
+                                    preview: { type: 'paragraph', text: 'Your AI site' }
+                                },
+                                {
+                                    html: '<span class="text-softPurple">&lt;/section&gt;</span>',
+                                    plain: '</section>',
+                                    delay: 100
+                                }
+                            ];
+
+                            const codeElement = document.getElementById('typing-code');
+                            const cursorElement = document.getElementById('cursor');
+                            const previewHeading = document.getElementById('preview-heading');
+                            const previewParagraph = document.getElementById('preview-paragraph');
+
+                            let currentLine = 0;
+                            let currentChar = 0;
+                            let displayedLines = [];
+
+                            // Get plain text version for character counting
+                            function getPlainText(html) {
+                                const temp = document.createElement('div');
+                                temp.innerHTML = html;
+                                return temp.textContent || temp.innerText;
+                            }
+
+                            // Type one character at a time
+                            function typeChar() {
+                                if (currentLine >= codeLines.length) {
+                                    // Done typing - wait 8 seconds then restart
+                                    setTimeout(resetAnimation, 8000);
+                                    return;
+                                }
+
+                                const line = codeLines[currentLine];
+                                const plainText = getPlainText(line.html);
+
+                                if (currentChar < plainText.length) {
+                                    // Build partial display
+                                    const partialPlain = plainText.substring(0, currentChar + 1);
+                                    updateDisplay(currentLine, partialPlain, line.html, plainText);
+
+                                    // Update preview if applicable
+                                    if (line.preview) {
+                                        const contentMatch = plainText.match(/>(.*?)</);
+                                        if (contentMatch) {
+                                            const contentStart = plainText.indexOf(contentMatch[1]);
+                                            const contentEnd = contentStart + contentMatch[1].length;
+                                            if (currentChar >= contentStart && currentChar < contentEnd) {
+                                                const visibleContent = contentMatch[1].substring(0, currentChar - contentStart + 1);
+                                                if (line.preview.type === 'heading') {
+                                                    previewHeading.textContent = visibleContent;
+                                                } else {
+                                                    previewParagraph.textContent = visibleContent;
+                                                }
+                                            } else if (currentChar >= contentEnd) {
+                                                if (line.preview.type === 'heading') {
+                                                    previewHeading.textContent = line.preview.text;
+                                                } else {
+                                                    previewParagraph.textContent = line.preview.text;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    currentChar++;
+                                    setTimeout(typeChar, 40 + Math.random() * 25);
+                                } else {
+                                    // Line complete
+                                    displayedLines[currentLine] = line.html;
+                                    currentLine++;
+                                    currentChar = 0;
+                                    setTimeout(typeChar, line.delay);
+                                }
+                            }
+
+                            // Update the code display
+                            function updateDisplay(lineIndex, partialPlain, fullHtml, fullPlain) {
+                                let output = '';
+
+                                // Add completed lines
+                                for (let i = 0; i < lineIndex; i++) {
+                                    output += displayedLines[i] + '\n';
+                                }
+
+                                // Add partial current line with proper highlighting
+                                const ratio = partialPlain.length / fullPlain.length;
+                                // Simple approach: show characters up to ratio of fullHtml
+                                let visibleHtml = '';
+                                let visibleChars = 0;
+                                let inTag = false;
+
+                                for (let i = 0; i < fullHtml.length && visibleChars < partialPlain.length; i++) {
+                                    const char = fullHtml[i];
+                                    visibleHtml += char;
+
+                                    if (char === '<') inTag = true;
+                                    else if (char === '>') inTag = false;
+                                    else if (!inTag) visibleChars++;
+                                }
+
+                                // Close any open tags
+                                const openTags = visibleHtml.match(/<span[^>]*>/g) || [];
+                                const closeTags = visibleHtml.match(/<\/span>/g) || [];
+                                const unclosed = openTags.length - closeTags.length;
+                                for (let i = 0; i < unclosed; i++) {
+                                    visibleHtml += '</span>';
+                                }
+
+                                output += visibleHtml;
+                                codeElement.innerHTML = output;
+                            }
+
+                            // Reset animation
+                            function resetAnimation() {
+                                currentLine = 0;
+                                currentChar = 0;
+                                displayedLines = [];
+                                codeElement.innerHTML = '';
+                                previewHeading.textContent = '';
+                                previewParagraph.textContent = '';
+                                typeChar();
+                            }
+
+                            // Start after page load
+                            setTimeout(typeChar, 500);
+                        })();
+                </script>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="py-20 md:py-32 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16 md:mb-20">
+                    <span
+                        class="inline-block px-4 py-1 rounded-full bg-electricBlue/10 text-electricBlue text-sm font-medium mb-4">
+                        Simple Process
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                        How It <span class="gradient-text">Works</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                        Three simple steps to transform your ideas into beautiful, functional websites.
+                    </p>
+                </div>
+
+                <!-- Steps Grid -->
+                <div class="grid md:grid-cols-3 gap-8 md:gap-12">
+                    <!-- Step 1 -->
+                    <div class="relative group">
+                        <div
+                            class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-electricBlue to-softPurple opacity-0 group-hover:opacity-20 blur transition-all duration-300">
+                        </div>
+                        <div
+                            class="relative p-8 rounded-2xl border border-white/10 bg-darkGray hover:border-white/20 transition-all duration-300">
+                            <div class="w-14 h-14 rounded-xl bg-electricBlue/10 flex items-center justify-center mb-6">
+                                <span class="text-2xl font-bold text-electricBlue">1</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-3">Describe Your Vision</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                Simply type what kind of website you want. Describe the layout, sections, colors, and
+                                style.
+                                Our AI understands natural language.
+                            </p>
+                            <!-- Icon -->
+                            <div class="mt-6 text-gray-600">
+                                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative group">
+                        <div
+                            class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-electricBlue to-softPurple opacity-0 group-hover:opacity-20 blur transition-all duration-300">
+                        </div>
+                        <div
+                            class="relative p-8 rounded-2xl border border-white/10 bg-darkGray hover:border-white/20 transition-all duration-300">
+                            <div class="w-14 h-14 rounded-xl bg-softPurple/10 flex items-center justify-center mb-6">
+                                <span class="text-2xl font-bold text-softPurple">2</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-3">Watch It Build Live</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                See your website come to life in real-time. Watch as each section is generated with code
+                                alongside a live preview panel.
+                            </p>
+                            <!-- Icon -->
+                            <div class="mt-6 text-gray-600">
+                                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative group">
+                        <div
+                            class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-electricBlue to-softPurple opacity-0 group-hover:opacity-20 blur transition-all duration-300">
+                        </div>
+                        <div
+                            class="relative p-8 rounded-2xl border border-white/10 bg-darkGray hover:border-white/20 transition-all duration-300">
+                            <div class="w-14 h-14 rounded-xl bg-green-500/10 flex items-center justify-center mb-6">
+                                <span class="text-2xl font-bold text-green-500">3</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-3">Export & Deploy</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                Download your complete website as a ZIP file. Get clean, production-ready HTML & CSS
+                                code
+                                you can deploy anywhere.
+                            </p>
+                            <!-- Icon -->
+                            <div class="mt-6 text-gray-600">
+                                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Features Section -->
+        <section id="features" class="py-20 md:py-32 bg-darkGray/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16">
+                    <span
+                        class="inline-block px-4 py-1 rounded-full bg-softPurple/10 text-softPurple text-sm font-medium mb-4">
+                        Features
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                        Powerful <span class="gradient-text">Features</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                        Everything you need to build beautiful websites without writing code from scratch.
+                    </p>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Feature 1 -->
+                    <div
+                        class="p-6 rounded-xl border border-white/5 bg-dark hover:bg-dark/80 transition-colors duration-200">
+                        <div class="w-12 h-12 rounded-lg bg-electricBlue/10 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-electricBlue" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Instant Generation</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">AI generates complete website code in seconds,
+                            not
+                            hours.</p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div
+                        class="p-6 rounded-xl border border-white/5 bg-dark hover:bg-dark/80 transition-colors duration-200">
+                        <div class="w-12 h-12 rounded-lg bg-softPurple/10 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-softPurple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Live Preview</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">See your website update in real-time as code is
+                            generated.</p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div
+                        class="p-6 rounded-xl border border-white/5 bg-dark hover:bg-dark/80 transition-colors duration-200">
+                        <div class="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Learning Mode</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Understand every line of code with clear
+                            explanations.</p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div
+                        class="p-6 rounded-xl border border-white/5 bg-dark hover:bg-dark/80 transition-colors duration-200">
+                        <div class="w-12 h-12 rounded-lg bg-yellow-500/10 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Mobile Responsive</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">All generated sites are mobile-first and fully
+                            responsive.</p>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div
+                        class="p-6 rounded-xl border border-white/5 bg-dark hover:bg-dark/80 transition-colors duration-200">
+                        <div class="w-12 h-12 rounded-lg bg-pink-500/10 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">ZIP Export</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Download your complete project as a
+                            ready-to-deploy
+                            ZIP file.</p>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div
+                        class="p-6 rounded-xl border border-white/5 bg-dark hover:bg-dark/80 transition-colors duration-200">
+                        <div class="w-12 h-12 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Tailwind CSS</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Modern utility-first CSS framework for clean,
+                            maintainable styles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Preview Showcase Section -->
+        <section id="preview" class="py-20 md:py-32 relative overflow-hidden">
+            <!-- Background Elements -->
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-electricBlue/5 to-transparent"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <!-- Left Content -->
+                    <div class="order-2 lg:order-1">
+                        <span
+                            class="inline-block px-4 py-1 rounded-full bg-electricBlue/10 text-electricBlue text-sm font-medium mb-4">
+                            Live Preview
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+                            See Your Website <span class="gradient-text">Come Alive</span>
+                        </h2>
+                        <p class="text-gray-400 text-lg mb-8 leading-relaxed">
+                            No more guessing. Watch your website build in real-time with our split-screen interface.
+                            Code on the left, instant preview on the right.
+                        </p>
+
+                        <!-- Feature List -->
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start space-x-3">
+                                <div
+                                    class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <span class="text-gray-300">Real-time code streaming as AI generates</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <div
+                                    class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <span class="text-gray-300">Instant iframe preview updates</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <div
+                                    class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <span class="text-gray-300">Monaco Editor with syntax highlighting</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <div
+                                    class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <span class="text-gray-300">Responsive preview across device sizes</span>
+                            </li>
+                        </ul>
+
+                        <a href="#"
+                            class="inline-flex items-center px-6 py-3 rounded-lg bg-gradient-to-r from-electricBlue to-softPurple text-white font-medium hover:opacity-90 transition-opacity duration-200">
+                            Try Live Preview
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Right Visual - Preview Mock -->
+                    <div class="order-1 lg:order-2">
+                        <div class="relative">
+                            <!-- Glow Effect -->
+                            <div
+                                class="absolute -inset-4 bg-gradient-to-r from-electricBlue/20 to-softPurple/20 rounded-3xl blur-2xl">
+                            </div>
+
+                            <!-- Browser Window -->
+                            <div class="relative rounded-2xl border border-white/10 bg-darkGray overflow-hidden glow">
+                                <!-- Browser Bar -->
+                                <div
+                                    class="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-dark">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                    </div>
+                                    <div class="flex-1 mx-4">
+                                        <div
+                                            class="bg-white/5 rounded-md px-3 py-1.5 text-xs text-gray-500 text-center">
+                                            localhost:3000
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2 text-gray-500">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Split View -->
+                                <div class="grid grid-cols-2 divide-x divide-white/5" style="min-height: 320px;">
+                                    <!-- Code Panel -->
+                                    <div class="p-4 bg-[#1e1e1e] overflow-hidden">
+                                        <div class="flex items-center space-x-2 mb-3">
+                                            <div class="w-2 h-2 rounded-full bg-electricBlue"></div>
+                                            <span class="text-xs text-gray-500 font-mono">index.html</span>
+                                        </div>
+                                        <pre class="text-xs text-gray-300 font-mono leading-relaxed overflow-hidden"><code><span class="text-gray-500">1</span>  <span class="text-pink-400">&lt;!DOCTYPE</span> html<span class="text-pink-400">&gt;</span>
+<span class="text-gray-500">2</span>  <span class="text-pink-400">&lt;html&gt;</span>
+<span class="text-gray-500">3</span>  <span class="text-pink-400">&lt;head&gt;</span>
+<span class="text-gray-500">4</span>    <span class="text-pink-400">&lt;title&gt;</span>My Site<span class="text-pink-400">&lt;/title&gt;</span>
+<span class="text-gray-500">5</span>  <span class="text-pink-400">&lt;/head&gt;</span>
+<span class="text-gray-500">6</span>  <span class="text-pink-400">&lt;body</span> <span class="text-electricBlue">class=</span><span class="text-green-400">"p-8"</span><span class="text-pink-400">&gt;</span>
+<span class="text-gray-500">7</span>    <span class="text-pink-400">&lt;h1</span> <span class="text-electricBlue">class=</span><span class="text-green-400">"text-4xl"</span><span class="text-pink-400">&gt;</span>
+<span class="text-gray-500">8</span>      Hello World
+<span class="text-gray-500">9</span>    <span class="text-pink-400">&lt;/h1&gt;</span>
+<span class="text-gray-500 animate-pulse">▋</span></code></pre>
+                                    </div>
+
+                                    <!-- Preview Panel -->
+                                    <div class="p-4 bg-white">
+                                        <div class="flex items-center space-x-2 mb-3">
+                                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                            <span class="text-xs text-gray-400">Preview</span>
+                                        </div>
+                                        <div class="bg-gray-50 rounded-lg p-6 h-full">
+                                            <h1 class="text-2xl font-bold text-gray-900">Hello World</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Learning Mode Section -->
+        <section id="learn" class="py-20 md:py-32 bg-darkGray/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <!-- Left Visual -->
+                    <div class="relative">
+                        <!-- Explanation Card Stack -->
+                        <div class="space-y-4">
+                            <!-- Card 1 -->
+                            <div
+                                class="p-6 rounded-xl border border-white/10 bg-dark transform hover:-translate-y-1 transition-transform duration-200">
+                                <div class="flex items-start space-x-4">
+                                    <div
+                                        class="w-10 h-10 rounded-lg bg-electricBlue/10 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-electricBlue font-bold">1</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold mb-2">Section: Hero</h4>
+                                        <p class="text-gray-400 text-sm mb-3">Creating the main hero section with a
+                                            headline
+                                            and CTA.</p>
+                                        <div class="bg-darkGray rounded-lg p-3">
+                                            <code class="text-xs text-gray-300 font-mono">
+                                            <span class="text-electricBlue">class=</span><span class="text-green-400">"min-h-screen flex items-center"</span>
+                                        </code>
+                                        </div>
+                                        <p class="text-gray-500 text-xs mt-2 italic">↳ Makes hero full height and
+                                            centers
+                                            content vertically</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div
+                                class="p-6 rounded-xl border border-softPurple/30 bg-dark transform hover:-translate-y-1 transition-transform duration-200 glow">
+                                <div class="flex items-start space-x-4">
+                                    <div
+                                        class="w-10 h-10 rounded-lg bg-softPurple/10 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-softPurple font-bold">2</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold mb-2">Responsiveness</h4>
+                                        <p class="text-gray-400 text-sm mb-3">Making the heading responsive across
+                                            devices.
+                                        </p>
+                                        <div class="bg-darkGray rounded-lg p-3">
+                                            <code class="text-xs text-gray-300 font-mono">
+                                            <span class="text-electricBlue">class=</span><span class="text-green-400">"text-3xl md:text-5xl lg:text-6xl"</span>
+                                        </code>
+                                        </div>
+                                        <p class="text-gray-500 text-xs mt-2 italic">↳ Font scales up: mobile → tablet →
+                                            desktop</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div
+                                class="p-6 rounded-xl border border-white/10 bg-dark transform hover:-translate-y-1 transition-transform duration-200">
+                                <div class="flex items-start space-x-4">
+                                    <div
+                                        class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-green-500 font-bold">3</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold mb-2">Gradient Button</h4>
+                                        <p class="text-gray-400 text-sm mb-3">Creating an eye-catching CTA button.</p>
+                                        <div class="bg-darkGray rounded-lg p-3">
+                                            <code class="text-xs text-gray-300 font-mono">
+                                            <span class="text-electricBlue">class=</span><span class="text-green-400">"bg-gradient-to-r from-blue-500 to-purple-500"</span>
+                                        </code>
+                                        </div>
+                                        <p class="text-gray-500 text-xs mt-2 italic">↳ Horizontal gradient from blue to
+                                            purple</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Content -->
+                    <div>
+                        <span
+                            class="inline-block px-4 py-1 rounded-full bg-green-500/10 text-green-500 text-sm font-medium mb-4">
+                            Learning Mode
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+                            Learn <span class="gradient-text">As You Build</span>
+                        </h2>
+                        <p class="text-gray-400 text-lg mb-8 leading-relaxed">
+                            Every line of code comes with a clear explanation. Understand not just WHAT the code does,
+                            but WHY it's written that way. Perfect for beginners and students.
+                        </p>
+
+                        <!-- Benefits -->
+                        <div class="space-y-6 mb-8">
+                            <div class="flex items-start space-x-4">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-electricBlue/10 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-electricBlue" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold mb-1">Concept Explanations</h4>
+                                    <p class="text-gray-400 text-sm">Learn flexbox, grid, spacing, and responsive design
+                                        naturally.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-4">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-softPurple/10 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-softPurple" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold mb-1">Plain Language</h4>
+                                    <p class="text-gray-400 text-sm">No jargon. Simple explanations anyone can
+                                        understand.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-4">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold mb-1">Skill Building</h4>
+                                    <p class="text-gray-400 text-sm">Progress from beginner to confident developer over
+                                        time.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="py-20 md:py-32">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16">
+                    <div class="flex items-center justify-center gap-2 mb-4">
+                        <span class="text-2xl">💜</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white">Choose a Plan</h2>
+                    </div>
+                </div>
+
+                <!-- Pricing Grid - 4 Cards -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+
+                    <!-- Free Trial Plan -->
+                    <div
+                        class="relative p-6 rounded-2xl border border-white/10 bg-[#0d1117] hover:border-white/20 transition-all duration-300">
+                        <h3 class="text-lg font-semibold text-white mb-4">Free Trial</h3>
+
+                        <!-- API Calls -->
+                        <div class="mb-2">
+                            <span class="text-4xl font-bold text-electricBlue">100</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4">API Calls</p>
+
+                        <!-- Price -->
+                        <div class="mb-1">
+                            <span class="text-2xl font-bold text-white">FREE</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4">30 days validity</p>
+
+                        <!-- Description -->
+                        <p class="text-gray-400 text-sm mb-6">Perfect for testing</p>
+
+                        <!-- Features -->
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                5 website generations
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Basic templates
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Live preview
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                HTML export
+                            </li>
+                        </ul>
+
+                        <a href="/app"
+                            class="flex items-center justify-center gap-2 w-full py-3 text-center rounded-xl bg-electricBlue text-white font-medium hover:bg-electricBlue/90 transition-colors duration-200">
+                            <span>⚡</span> Get Started Free
+                        </a>
+                    </div>
+
+                    <!-- Starter Plan -->
+                    <div
+                        class="relative p-6 rounded-2xl border border-white/10 bg-[#0d1117] hover:border-white/20 transition-all duration-300">
+                        <h3 class="text-lg font-semibold text-white mb-4">Starter</h3>
+
+                        <!-- API Calls -->
+                        <div class="mb-2">
+                            <span class="text-4xl font-bold text-green-400">1,000</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4">API Calls</p>
+
+                        <!-- Price -->
+                        <div class="mb-1">
+                            <span class="text-2xl font-bold text-white">₹499</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4">30 days validity</p>
+
+                        <!-- Description -->
+                        <p class="text-gray-400 text-sm mb-6">Great for small shops</p>
+
+                        <!-- Features -->
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Unlimited generations
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                All premium templates
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Priority AI
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                ZIP export
+                            </li>
+                        </ul>
+
+                        <a href="#"
+                            class="flex items-center justify-center gap-2 w-full py-3 text-center rounded-xl bg-gradient-to-r from-electricBlue to-softPurple text-white font-medium hover:opacity-90 transition-opacity duration-200">
+                            <span>⚡</span> Upgrade Now
+                        </a>
+                    </div>
+
+                    <!-- Professional Plan (Popular) -->
+                    <div class="relative p-6 rounded-2xl border-2 border-orange-500/50 bg-[#0d1117]">
+                        <!-- Popular Badge -->
+                        <span
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-orange-500 text-white text-xs font-medium rounded-full">
+                            Popular
+                        </span>
+
+                        <h3 class="text-lg font-semibold text-white mb-4">Professional</h3>
+
+                        <!-- API Calls -->
+                        <div class="mb-2">
+                            <span class="text-4xl font-bold text-green-400">5,000</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4">API Calls</p>
+
+                        <!-- Price -->
+                        <div class="mb-1">
+                            <span class="text-2xl font-bold text-white">₹1,499</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4">30 days validity</p>
+
+                        <!-- Description -->
+                        <p class="text-gray-400 text-sm mb-6">For growing businesses</p>
+
+                        <!-- Features -->
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Everything in Starter
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Learning mode
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Custom themes
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Email support
+                            </li>
+                        </ul>
+
+                        <a href="#"
+                            class="flex items-center justify-center gap-2 w-full py-3 text-center rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-medium hover:opacity-90 transition-opacity duration-200">
+                            <span>⚡</span> Upgrade Now
+                        </a>
+                    </div>
+
+                    <!-- Enterprise Plan -->
+                    <div
+                        class="relative p-6 rounded-2xl border border-white/10 bg-[#0d1117] hover:border-white/20 transition-all duration-300">
+                        <h3 class="text-lg font-semibold text-white mb-4">Enterprise</h3>
+
+                        <!-- API Calls -->
+                        <div class="mb-2">
+                            <span class="text-4xl font-bold text-gray-300">25,000</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4">API Calls</p>
+
+                        <!-- Price -->
+                        <div class="mb-1">
+                            <span class="text-2xl font-bold text-white">₹4,999</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4">30 days validity</p>
+
+                        <!-- Description -->
+                        <p class="text-gray-400 text-sm mb-6">Unlimited potential</p>
+
+                        <!-- Features -->
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Everything in Pro
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Team collaboration
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Custom branding
+                            </li>
+                            <li class="flex items-center text-gray-300 text-sm">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                API access
+                            </li>
+                        </ul>
+
+                        <a href="#"
+                            class="flex items-center justify-center gap-2 w-full py-3 text-center rounded-xl bg-gradient-to-r from-electricBlue to-softPurple text-white font-medium hover:opacity-90 transition-opacity duration-200">
+                            <span>⚡</span> Upgrade Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits / Why Choose Us Section -->
+        <section class="py-20 md:py-32 relative overflow-hidden">
+            <!-- Background Gradient -->
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-electricBlue/5 to-transparent"></div>
+
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16">
+                    <span
+                        class="inline-block px-4 py-1 rounded-full bg-electricBlue/10 text-electricBlue text-sm font-medium mb-4">
+                        Why Choose Us
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                        Built for <span class="gradient-text">Everyone</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                        Whether you're a student learning to code or a professional prototyping ideas, we've got you
+                        covered.
+                    </p>
+                </div>
+
+                <!-- Benefits Grid -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Benefit 1 -->
+                    <div
+                        class="flex items-start space-x-6 p-6 rounded-2xl border border-white/5 bg-darkGray/50 hover:bg-darkGray transition-colors duration-200">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-electricBlue to-softPurple flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Save Hours of Work</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                Stop writing boilerplate code from scratch. Generate complete layouts in seconds and
+                                focus
+                                on what makes your project unique.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Benefit 2 -->
+                    <div
+                        class="flex items-start space-x-6 p-6 rounded-2xl border border-white/5 bg-darkGray/50 hover:bg-darkGray transition-colors duration-200">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-softPurple to-pink-500 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Learn While Building</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                Perfect for students and beginners. Every line of code is explained, helping you
+                                understand
+                                modern frontend development.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Benefit 3 -->
+                    <div
+                        class="flex items-start space-x-6 p-6 rounded-2xl border border-white/5 bg-darkGray/50 hover:bg-darkGray transition-colors duration-200">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Production-Ready Code</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                Generated code follows best practices with semantic HTML, responsive design, and clean
+                                Tailwind CSS utilities.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Benefit 4 -->
+                    <div
+                        class="flex items-start space-x-6 p-6 rounded-2xl border border-white/5 bg-darkGray/50 hover:bg-darkGray transition-colors duration-200">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-2">No Backend Required</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                Everything runs in your browser. No server setup, no database, no complex configuration.
+                                Just pure frontend magic.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold gradient-text mb-2">10K+</div>
+                        <p class="text-gray-400">Websites Generated</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold gradient-text mb-2">50+</div>
+                        <p class="text-gray-400">Template Styles</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold gradient-text mb-2">99%</div>
+                        <p class="text-gray-400">User Satisfaction</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold gradient-text mb-2">Free</div>
+                        <p class="text-gray-400">To Get Started</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 md:py-32 relative">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="relative rounded-3xl overflow-hidden">
+                    <!-- Background Gradient -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-electricBlue to-softPurple opacity-90"></div>
+
+                    <!-- Pattern Overlay -->
+                    <div class="absolute inset-0 opacity-10">
+                        <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <defs>
+                                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5" />
+                                </pattern>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#grid)" />
+                        </svg>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="relative py-16 md:py-20 px-8 md:px-16 text-center">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                            Ready to Build Your Website?
+                        </h2>
+                        <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10">
+                            Start generating beautiful, responsive websites in seconds. No credit card required. Free
+                            forever for basic usage.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <a href="/app"
+                                class="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-electricBlue font-semibold text-lg hover:bg-gray-100 transition-colors duration-200 shadow-lg">
+                                Start Building Free →
+                            </a>
+                            <a href="#"
+                                class="w-full sm:w-auto px-8 py-4 rounded-xl border-2 border-white text-white font-semibold text-lg hover:bg-white/10 transition-colors duration-200">
+                                View Examples
+                            </a>
+                        </div>
+
+                        <!-- Trust Badges -->
+                        <div class="mt-10 flex flex-wrap items-center justify-center gap-6 text-white/60 text-sm">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>No credit card required</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Unlimited exports</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Cancel anytime</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-16 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+                    <!-- Brand Column -->
+                    <div class="lg:col-span-2">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <div class="w-8 h-8 rounded-lg gradient-border flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">AI</span>
+                            </div>
+                            <span class="text-xl font-bold text-white brand-animate font-bengali">Codeকথা AI</span>
+                        </div>
+                        <p class="text-gray-400 mb-6 max-w-sm">
+                            Build beautiful websites with AI. Generate, preview, learn, and export production-ready code
+                            instantly.
+                        </p>
+                        <!-- Social Links -->
+                        <div class="flex items-center space-x-4">
+                            <a href="#"
+                                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                </svg>
+                            </a>
+                            <a href="#"
+                                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                </svg>
+                            </a>
+                            <a href="#"
+                                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                                </svg>
+                            </a>
+                            <a href="#"
+                                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Product Links -->
+                    <div>
+                        <h4 class="text-white font-semibold mb-4">Product</h4>
+                        <ul class="space-y-3">
+                            <li><a href="#"
+                                    class="text-gray-400 hover:text-white transition-colors duration-200">Features</a>
+                            </li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">How It
+                                    Works</a></li>
+                            <li><a href="#"
+                                    class="text-gray-400 hover:text-white transition-colors duration-200">Pricing</a>
+                            </li>
+                            <li><a href="#"
+                                    class="text-gray-400 hover:text-white transition-colors duration-200">Examples</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Resources Links -->
+                    <div>
+                        <h4 class="text-white font-semibold mb-4">Resources</h4>
+                        <ul class="space-y-3">
+                            <li><a href="#"
+                                    class="text-gray-400 hover:text-white transition-colors duration-200">Documentation</a>
+                            </li>
+                            <li><a href="#"
+                                    class="text-gray-400 hover:text-white transition-colors duration-200">Tutorials</a>
+                            </li>
+                            <li><a href="#"
+                                    class="text-gray-400 hover:text-white transition-colors duration-200">Blog</a>
+                            </li>
+                            <li><a href="#"
+                                    class="text-gray-400 hover:text-white transition-colors duration-200">Support</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Company Links -->
+                    <div>
+                        <h4 class="text-white font-semibold mb-4">Company</h4>
+                        <ul class="space-y-3">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">About
+                                    Us</a></li>
+                            <li><a href="#"
+                                    class="text-gray-400 hover:text-white transition-colors duration-200">Careers</a>
+                            </li>
+                            <li><a href="#"
+                                    class="text-gray-400 hover:text-white transition-colors duration-200">Privacy
+                                    Policy</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Terms
+                                    of
+                                    Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Bottom Bar -->
+                <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-gray-500 text-sm">
+                        © 2026 Codeকথা AI. All rights reserved.
+                    </p>
+                    <div class="flex items-center space-x-6 text-sm">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Privacy</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Terms</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Cookies</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div><!-- End Main Content Wrapper -->
+
+    <!-- Login Transition Script -->
+    <script>
+        // Global function to show login overlay (called by CTA buttons)
+        function showLoginOverlay() {
+            const loginOverlay = document.getElementById('login-overlay');
+            loginOverlay.style.display = 'flex';
+            loginOverlay.classList.remove('fade-out');
+            loginOverlay.classList.add('fade-in');
+            clearAuthErrors();
+        }
+
+        // Toggle between Sign In and Sign Up forms
+        function toggleAuthForm(e) {
+            e.preventDefault();
+            const signinContainer = document.getElementById('signin-form-container');
+            const signupContainer = document.getElementById('signup-form-container');
+            clearAuthErrors();
+
+            if (signinContainer.style.display === 'none') {
+                signinContainer.style.display = 'block';
+                signupContainer.style.display = 'none';
+            } else {
+                signinContainer.style.display = 'none';
+                signupContainer.style.display = 'block';
+            }
+        }
+
+        // Clear error messages
+        function clearAuthErrors() {
+            const errorElements = document.querySelectorAll('.auth-error');
+            errorElements.forEach(el => el.remove());
+        }
+
+        // Show error message
+        function showAuthError(formId, message) {
+            clearAuthErrors();
+            const form = document.getElementById(formId);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'auth-error text-red-400 text-sm text-center p-3 rounded-lg bg-red-500/10 border border-red-500/20 mb-4';
+            errorDiv.textContent = message;
+            form.insertBefore(errorDiv, form.firstChild);
+        }
+
+        // Show success message
+        function showAuthSuccess(formId, message) {
+            clearAuthErrors();
+            const form = document.getElementById(formId);
+            const successDiv = document.createElement('div');
+            successDiv.className = 'auth-error text-green-400 text-sm text-center p-3 rounded-lg bg-green-500/10 border border-green-500/20 mb-4';
+            successDiv.textContent = message;
+            form.insertBefore(successDiv, form.firstChild);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginOverlay = document.getElementById('login-overlay');
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const showLoginBtn = document.getElementById('show-login-btn');
+
+            // Show login overlay when clicking "Sign In" in navbar
+            showLoginBtn.addEventListener('click', function () {
+                showLoginOverlay();
+            });
+
+            // Handle Sign In form submission
+            loginForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const submitBtn = loginForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+
+                try {
+                    // Get form data
+                    const email = loginForm.querySelector('input[type="email"]').value;
+                    const password = loginForm.querySelector('input[type="password"]').value;
+
+                    if (!email || !password) {
+                        showAuthError('login-form', 'Please enter both email and password');
+                        return;
+                    }
+
+                    // Show loading state
+                    submitBtn.textContent = 'Signing in...';
+                    submitBtn.disabled = true;
+
+                    // Call API
+                    const response = await fetch('/api/auth/signin', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showAuthSuccess('login-form', 'Welcome back!');
+
+                        // Store user info in localStorage
+                        localStorage.setItem('user', JSON.stringify(data.user));
+
+                        // Redirect to app after short delay
+                        setTimeout(() => {
+                            loginOverlay.classList.remove('fade-in');
+                            loginOverlay.classList.add('fade-out');
+                            setTimeout(() => window.location.href = '/dashboard', 400);
+                        }, 500);
+                    } else {
+                        showAuthError('login-form', data.error || 'Sign in failed');
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }
+                } catch (error) {
+                    showAuthError('login-form', 'Network error. Please try again.');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+
+            // Handle Sign Up form submission
+            signupForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const submitBtn = signupForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+
+                try {
+                    // Get form data
+                    const name = signupForm.querySelector('input[type="text"]').value;
+                    const email = signupForm.querySelector('input[type="email"]').value;
+                    const password = signupForm.querySelector('input[type="password"]').value;
+                    const termsChecked = signupForm.querySelector('input[type="checkbox"]').checked;
+
+                    if (!email || !password) {
+                        showAuthError('signup-form', 'Please enter email and password');
+                        return;
+                    }
+
+                    if (password.length < 6) {
+                        showAuthError('signup-form', 'Password must be at least 6 characters');
+                        return;
+                    }
+
+                    if (!termsChecked) {
+                        showAuthError('signup-form', 'Please agree to the Terms of Service');
+                        return;
+                    }
+
+                    // Show loading state
+                    submitBtn.textContent = 'Creating account...';
+                    submitBtn.disabled = true;
+
+                    // Call API
+                    const response = await fetch('/api/auth/signup', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showAuthSuccess('signup-form', 'Account created! Welcome to Codeকথা AI!');
+
+                        // Store user info in localStorage
+                        localStorage.setItem('user', JSON.stringify(data.user));
+
+                        // Redirect to app after short delay
+                        setTimeout(() => {
+                            loginOverlay.classList.remove('fade-in');
+                            loginOverlay.classList.add('fade-out');
+                            setTimeout(() => window.location.href = '/dashboard', 400);
+                        }, 800);
+                    } else {
+                        showAuthError('signup-form', data.error || 'Sign up failed');
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }
+                } catch (error) {
+                    showAuthError('signup-form', 'Network error. Please try again.');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+
+            // Close on clicking outside the login card
+            loginOverlay.addEventListener('click', function (e) {
+                if (e.target === loginOverlay) {
+                    loginOverlay.classList.add('fade-out');
+                    setTimeout(function () {
+                        loginOverlay.style.display = 'none';
+                        loginOverlay.classList.remove('fade-out');
+                        clearAuthErrors();
+                        // Reset to sign-in form when closing
+                        document.getElementById('signin-form-container').style.display = 'block';
+                        document.getElementById('signup-form-container').style.display = 'none';
+                    }, 400);
+                }
+            });
+        });
+    </script>
+
+    <!-- Voice Assistant -->
+    <script src="/js/voice-assistant.js"></script>
+</body>
+
+</html>

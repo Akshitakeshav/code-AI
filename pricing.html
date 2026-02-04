@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Codeকথা AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0a0a0f',
+                        darkGray: '#12121a',
+                        electricBlue: '#3b82f6',
+                        softPurple: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-bengali {
+            font-family: 'Hind Siliguri', 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+        }
+    </style>
+</head>
+
+<body class="bg-dark text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-darkGray border-b border-white/5 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">AI</span>
+                    </div>
+                    <span class="text-xl font-bold text-white font-bengali">Codeকথা AI</span>
+                </a>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center space-x-1">
+                    <a href="/dashboard"
+                        class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-sm font-medium transition-all">
+                        🏠 Dashboard
+                    </a>
+                    <a href="/app"
+                        class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-sm font-medium transition-all">
+                        ⚡ Builder
+                    </a>
+                    <a href="/pricing" class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">
+                        💰 Pricing
+                    </a>
+                </nav>
+
+                <!-- Back to Dashboard -->
+                <a href="/dashboard"
+                    class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm text-gray-300">
+                    <span>← Back</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <!-- API Usage Overview (Only shown when logged in with active plan) -->
+        <div id="apiUsageSection" class="hidden mb-12">
+            <div
+                class="bg-gradient-to-r from-electricBlue to-softPurple rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                <!-- Background decoration -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2">
+                </div>
+
+                <div class="relative z-10">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                        <div>
+                            <div class="flex items-center space-x-3 mb-2">
+                                <span class="text-2xl">⚡</span>
+                                <h2 class="text-xl md:text-2xl font-bold text-white">API Usage Overview</h2>
+                            </div>
+                            <p class="text-white/70 text-sm">Track your API calls and token consumption</p>
+                        </div>
+                        <span id="currentPlanBadge"
+                            class="mt-4 md:mt-0 px-4 py-2 rounded-full bg-white/20 text-white text-sm font-medium">
+                            Free Trial
+                        </span>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white/10 backdrop-blur rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="text-yellow-300 text-lg">🪙</span>
+                                <span class="text-white/70 text-xs">Tokens Left</span>
+                            </div>
+                            <p id="tokensLeft" class="text-2xl md:text-3xl font-bold text-white">0</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="text-green-300 text-lg">📊</span>
+                                <span class="text-white/70 text-xs">Tokens Used</span>
+                            </div>
+                            <p id="tokensUsed" class="text-2xl md:text-3xl font-bold text-white">0</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="text-orange-300 text-lg">📅</span>
+                                <span class="text-white/70 text-xs">Expires</span>
+                            </div>
+                            <p id="planExpiry" class="text-xl md:text-2xl font-bold text-white">--</p>
+                        </div>
+                    </div>
+
+                    <!-- Usage Progress Bar -->
+                    <div class="bg-white/10 rounded-full h-3 overflow-hidden">
+                        <div id="usageProgress"
+                            class="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full transition-all duration-500"
+                            style="width: 0%"></div>
+                    </div>
+                    <p id="usageText" class="text-white/60 text-xs mt-2">0% of your plan used</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Choose a Plan Section Header -->
+        <div class="flex items-center space-x-3 mb-8">
+            <span class="text-2xl">💜</span>
+            <h2 class="text-2xl font-bold text-white">Choose a Plan</h2>
+        </div>
+
+        <!-- Pricing Cards Container -->
+        <div id="pricingCards" class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <!-- Loading State -->
+            <div class="col-span-full text-center py-12">
+                <div class="animate-pulse">
+                    <div class="h-8 bg-darkGray rounded w-48 mx-auto mb-4"></div>
+                    <div class="h-4 bg-darkGray rounded w-32 mx-auto"></div>
+                </div>
+                <p class="text-gray-500 mt-4">Loading pricing plans...</p>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mt-20 max-w-3xl mx-auto">
+            <h2 class="text-2xl font-bold text-white text-center mb-10">Frequently Asked Questions</h2>
+            <div class="space-y-4">
+                <div class="bg-darkGray rounded-xl p-6 border border-white/5">
+                    <h3 class="text-white font-semibold mb-2">Can I cancel anytime?</h3>
+                    <p class="text-gray-400 text-sm">Yes, you can cancel your subscription at any time. No questions
+                        asked.</p>
+                </div>
+                <div class="bg-darkGray rounded-xl p-6 border border-white/5">
+                    <h3 class="text-white font-semibold mb-2">What payment methods do you accept?</h3>
+                    <p class="text-gray-400 text-sm">We accept all major credit cards, PayPal, and UPI payments.</p>
+                </div>
+                <div class="bg-darkGray rounded-xl p-6 border border-white/5">
+                    <h3 class="text-white font-semibold mb-2">Do you offer refunds?</h3>
+                    <p class="text-gray-400 text-sm">Yes, we offer a 14-day money-back guarantee for all paid plans.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 mt-20 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-gray-500 text-sm">© 2026 Codeকথা AI. Build websites with AI magic.</p>
+        </div>
+    </footer>
+
+    <script>
+        let currentSubscription = null;
+
+        // Fetch and render pricing plans
+        async function loadPricingPlans() {
+            const container = document.getElementById('pricingCards');
+            const user = getCurrentUser();
+
+            // Load user subscription if logged in
+            if (user) {
+                await loadSubscription(user.id);
+            }
+
+            try {
+                const response = await fetch('/api/pricing');
+                const data = await response.json();
+
+                if (data.success && data.plans.length > 0) {
+                    // Adjust grid based on number of plans
+                    const gridCols = data.plans.length >= 4 ? 'lg:grid-cols-4' :
+                        data.plans.length === 3 ? 'lg:grid-cols-3' :
+                            'lg:grid-cols-2';
+                    container.className = `grid md:grid-cols-2 ${gridCols} gap-6 max-w-6xl mx-auto`;
+
+                    container.innerHTML = data.plans.map(plan => {
+                        const features = plan.features ? plan.features.split(',') : [];
+                        const priceFormatted = parseFloat(plan.price) === 0 ? 'FREE' : '₹' + parseFloat(plan.price).toLocaleString();
+                        const isFree = parseFloat(plan.price) === 0;
+                        const isCurrentPlan = currentSubscription && currentSubscription.plan_id === plan.id;
+
+                        return `
+                            <div class="bg-darkGray rounded-2xl ${isCurrentPlan ? 'border-2 border-green-500' : plan.is_popular ? 'border-2 border-softPurple/50' : 'border border-white/10'} p-6 card-hover relative">
+                                ${isCurrentPlan ? `
+                                    <div class="absolute -top-3 left-4">
+                                        <span class="px-3 py-1 rounded-full bg-green-500 text-white text-xs font-semibold">Current Plan</span>
+                                    </div>
+                                ` : plan.is_popular ? `
+                                    <div class="absolute -top-3 left-4">
+                                        <span class="px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-semibold">Popular</span>
+                                    </div>
+                                ` : ''}
+                                
+                                <h3 class="text-xl font-bold text-white mb-1 ${isCurrentPlan || plan.is_popular ? 'mt-2' : ''}">${plan.name}</h3>
+                                
+                                <p class="text-3xl font-bold text-electricBlue mb-1">${plan.tokens.toLocaleString()}</p>
+                                <p class="text-gray-500 text-xs mb-3">API Calls</p>
+                                
+                                <p class="text-xl font-semibold text-white">${priceFormatted}</p>
+                                <p class="text-gray-500 text-xs mb-4">${plan.duration_days} days validity</p>
+                                
+                                <p class="text-gray-400 text-sm mb-4">${plan.description || ''}</p>
+                                
+                                <ul class="space-y-2 mb-6">
+                                    ${features.slice(0, 4).map(f => `
+                                        <li class="flex items-center space-x-2 text-gray-300 text-sm">
+                                            <span class="text-green-400">✓</span>
+                                            <span>${f.trim()}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                                
+                                ${isCurrentPlan ? `
+                                    <button disabled class="w-full py-3 rounded-xl bg-green-500 text-white font-semibold flex items-center justify-center space-x-2">
+                                        <span>✓</span>
+                                        <span>Active</span>
+                                    </button>
+                                ` : `
+                                    <button onclick="${isFree ? `activateFreePlan(${plan.id})` : `initPayment(${plan.id}, '${plan.name}', ${plan.price})`}"
+                                        class="w-full py-3 rounded-xl ${plan.is_popular ? 'gradient-bg' : 'bg-electricBlue'} text-white font-semibold hover:opacity-90 transition-all flex items-center justify-center space-x-2">
+                                        <span>⚡</span>
+                                        <span>${isFree ? 'Get Started Free' : 'Upgrade Now'}</span>
+                                    </button>
+                                `}
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <p class="text-gray-400">No pricing plans available at the moment.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load pricing:', error);
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-gray-400">Failed to load pricing plans. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load user subscription
+        async function loadSubscription(userId) {
+            try {
+                const response = await fetch(`/api/payment/subscription/${userId}`);
+                const data = await response.json();
+
+                if (data.success && data.subscription) {
+                    currentSubscription = data.subscription;
+                    showApiUsageSection(data.subscription);
+                }
+            } catch (error) {
+                console.error('Failed to load subscription:', error);
+            }
+        }
+
+        // Show API usage section
+        function showApiUsageSection(sub) {
+            const section = document.getElementById('apiUsageSection');
+            section.classList.remove('hidden');
+
+            // Update plan badge
+            document.getElementById('currentPlanBadge').textContent = sub.plan_name;
+
+            // Update tokens
+            const tokensLeft = sub.tokens_remaining || 0;
+            const totalTokens = sub.plan_tokens || 1;
+
+            // Use real usage from DB (since tokensLeft can be > planTokens if updated manually)
+            const tokensUsed = sub.tokens_used !== undefined ? sub.tokens_used : Math.max(0, totalTokens - tokensLeft);
+
+            document.getElementById('tokensLeft').textContent = tokensLeft.toLocaleString();
+            document.getElementById('tokensUsed').textContent = tokensUsed.toLocaleString();
+
+            // Update expiry
+            if (sub.end_date) {
+                const expiry = new Date(sub.end_date);
+                const options = { month: 'short', day: '2-digit' };
+                document.getElementById('planExpiry').textContent = expiry.toLocaleDateString('en-US', options);
+            }
+
+            // Update progress bar
+            // Calculate percentage based on used / (used + remaining) to be accurate regardless of plan totals
+            const totalActual = tokensUsed + tokensLeft;
+            const usagePercent = totalActual > 0 ? (tokensUsed / totalActual) * 100 : 0;
+
+            document.getElementById('usageProgress').style.width = usagePercent + '%';
+            document.getElementById('usageText').textContent = Math.round(usagePercent) + '% of your plan used';
+        }
+
+        // Get current user
+        function getCurrentUser() {
+            const userStr = localStorage.getItem('user');
+            return userStr ? JSON.parse(userStr) : null;
+        }
+
+        // Activate free plan
+        async function activateFreePlan(planId) {
+            const user = getCurrentUser();
+            if (!user) {
+                alert('Please login to activate a plan');
+                window.location.href = '/';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/payment/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ planId, userId: user.id })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.free) {
+                    alert('🎉 Free plan activated! You now have ' + data.message);
+                    window.location.href = '/dashboard';
+                } else {
+                    alert(data.error || 'Failed to activate plan');
+                }
+            } catch (error) {
+                console.error('Activation error:', error);
+                alert('Network error. Please try again.');
+            }
+        }
+
+        // Initialize Razorpay payment
+        async function initPayment(planId, planName, planPrice) {
+            const user = getCurrentUser();
+            if (!user) {
+                alert('Please login to purchase a plan');
+                window.location.href = '/';
+                return;
+            }
+
+            try {
+                // Get Razorpay key
+                const keyResponse = await fetch('/api/payment/key');
+                const keyData = await keyResponse.json();
+
+                if (!keyData.key_id || keyData.key_id.includes('YOUR_KEY')) {
+                    alert('Payment gateway not configured. Please contact admin.');
+                    return;
+                }
+
+                // Create order
+                const orderResponse = await fetch('/api/payment/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ planId, userId: user.id })
+                });
+
+                const orderData = await orderResponse.json();
+
+                if (!orderData.success) {
+                    alert(orderData.error || 'Failed to create order');
+                    return;
+                }
+
+                // Open Razorpay checkout
+                const options = {
+                    key: keyData.key_id,
+                    amount: orderData.order.amount,
+                    currency: orderData.order.currency,
+                    name: 'Codeকথা AI',
+                    description: `${planName} - ${orderData.plan.tokens} tokens`,
+                    order_id: orderData.order.id,
+                    handler: async function (response) {
+                        // Verify payment
+                        const verifyResponse = await fetch('/api/payment/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                                planId,
+                                userId: user.id
+                            })
+                        });
+
+                        const verifyData = await verifyResponse.json();
+
+                        if (verifyData.success) {
+                            alert('🎉 Payment successful! Your plan is now active.');
+                            window.location.href = '/dashboard';
+                        } else {
+                            alert('Payment verification failed. Please contact support.');
+                        }
+                    },
+                    prefill: {
+                        name: user.name || '',
+                        email: user.email || ''
+                    },
+                    theme: {
+                        color: '#8b5cf6'
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.on('payment.failed', function (response) {
+                    alert('Payment failed: ' + response.error.description);
+                });
+                rzp.open();
+
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert('Payment initialization failed. Please try again.');
+            }
+        }
+
+        // Load plans on page load
+        document.addEventListener('DOMContentLoaded', loadPricingPlans);
+    </script>
+
+    <!-- Razorpay SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <!-- Voice Assistant -->
+    <script src="/js/voice-assistant.js"></script>
+</body>
+
+</html>
